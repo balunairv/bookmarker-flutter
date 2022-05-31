@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "707520296819",
+    "project_id": "flutter-bookmark-app",
+    "storage_bucket": "flutter-bookmark-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707520296819:android:3072cb531a393ebbc77706",
+        "android_client_info": {
+          "package_name": "com.example.bookmark_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707520296819-ppaeo8mmf6q8rpfhf4gsuemn5tb13hfv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo67IKbXQl0kcebiQ-Tk5bNUgxIKVpC2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707520296819-ppaeo8mmf6q8rpfhf4gsuemn5tb13hfv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707520296819:android:4415b25cd1a61c9dc77706",
+        "android_client_info": {
+          "package_name": "com.example.bookmarker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707520296819-ppaeo8mmf6q8rpfhf4gsuemn5tb13hfv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo67IKbXQl0kcebiQ-Tk5bNUgxIKVpC2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707520296819-ppaeo8mmf6q8rpfhf4gsuemn5tb13hfv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
