@@ -2,14 +2,16 @@ import 'package:bookmarker/databaseService.dart';
 import 'package:flutter/material.dart';
 
 class AddingScreen extends StatefulWidget {
-  const AddingScreen({Key? key,}) : super(key: key);
-  
+  AddingScreen({Key? key, required this.uid}) : super(key: key);
+  String uid;
 
   @override
-  State<AddingScreen> createState() => _AddingScreenState();
+  State<AddingScreen> createState() => _AddingScreenState(uid);
 }
 
 class _AddingScreenState extends State<AddingScreen> {
+  String uid;
+  _AddingScreenState(this.uid);
   String title = "";
   String url = "";
   String dropDownVal = 'Select Folder';
@@ -30,14 +32,15 @@ class _AddingScreenState extends State<AddingScreen> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                 child: TextField(
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     labelText: 'Title',
                     fillColor: Colors.green,
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
+                        borderSide: const BorderSide(color: Colors.green),
                         borderRadius: BorderRadius.circular(10)),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
@@ -48,14 +51,15 @@ class _AddingScreenState extends State<AddingScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                 child: TextField(
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     labelText: 'URL',
                     fillColor: Colors.green,
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
+                        borderSide: const BorderSide(color: Colors.green),
                         borderRadius: BorderRadius.circular(10)),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
@@ -90,10 +94,14 @@ class _AddingScreenState extends State<AddingScreen> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () async {await DatabaseServices(uid: )},
+                onPressed: () async {
+                  DatabaseServices(uid: uid)
+                      .addBookmark(title: title, url: url, folder: dropDownVal);
+                  Navigator.pop(context);
+                },
                 child: Text(
-                  "Create",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  "Create",
                 ),
                 style: ElevatedButton.styleFrom(
                     primary: Colors.green,
@@ -101,6 +109,7 @@ class _AddingScreenState extends State<AddingScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
               ),
+              Text(uid),
             ],
           ),
         ),
