@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../databaseService.dart';
 import 'folderAddingScreen.dart';
 import 'bookmarkListScreen.dart';
 
@@ -27,6 +28,8 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
         .get();
     return qn.docs;
   }
+
+  String groupID = "";
 
   @override
   Widget build(BuildContext context) {
@@ -132,18 +135,24 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
               DialogButton(
                 child: TextField(
                   style: TextStyle(color: Colors.white, fontSize: 20),
+                  onChanged: (val) {
+                    setState(() {
+                      groupID = val.toString();
+                    });
+                  },
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(116, 116, 191, 1.0),
                   Color.fromRGBO(52, 138, 199, 1.0)
                 ]),
+                onPressed: () {
+                  DatabaseServices(uid: widget.user.uid)
+                      .searchAdd(uniqueID: groupID);
+                },
               ),
               DialogButton(
                 child: Text(
-                  "FLAT",
+                  "Find and Add",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
                 onPressed: () => Navigator.pop(context),

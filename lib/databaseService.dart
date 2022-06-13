@@ -65,4 +65,15 @@ class DatabaseServices {
       'uniqueID': uniqueID,
     });
   }
+
+  Future searchAdd({uniqueID}) async {
+    final CollectionReference folderCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('groups');
+
+    return await folderCollection.doc(uniqueID).set({
+      'uniqueID': uniqueID,
+    });
+  }
 }
