@@ -2,27 +2,21 @@ import 'package:bookmarker/databaseService.dart';
 import 'package:flutter/material.dart';
 
 class AddingScreen extends StatefulWidget {
-  AddingScreen({Key? key, required this.uid}) : super(key: key);
+  AddingScreen({Key? key, required this.uid, required this.folder})
+      : super(key: key);
   String uid;
+  String folder;
 
   @override
-  State<AddingScreen> createState() => _AddingScreenState(uid);
+  State<AddingScreen> createState() => _AddingScreenState(uid, folder);
 }
 
 class _AddingScreenState extends State<AddingScreen> {
-  String uid;
-  _AddingScreenState(this.uid);
+  String uid, folder;
+  _AddingScreenState(this.uid, this.folder);
   String title = "";
   String url = "";
-  String dropDownVal = 'Select Folder';
-  final items = [
-    'Select Folder',
-    'Youtube',
-    'Instagram',
-    'Chrome',
-    'Twitter',
-    'Other'
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,34 +63,10 @@ class _AddingScreenState extends State<AddingScreen> {
                   },
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.green)),
-                child: DropdownButton(
-                  isExpanded: true,
-                  items: items.map((itemsName) {
-                    return DropdownMenuItem(
-                      value: itemsName,
-                      child: Text(itemsName),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      dropDownVal = newValue.toString();
-                    });
-                  },
-                  value: dropDownVal,
-                ),
-              ),
               ElevatedButton(
                 onPressed: () async {
-                  DatabaseServices(uid: uid)
-                      .addBookmark(title: title, url: url, folder: dropDownVal);
+                  DatabaseServices(uid: uid).addBookmark(
+                      title: title, url: url, folder: widget.folder);
                   Navigator.pop(context);
                 },
                 child: Text(

@@ -1,15 +1,15 @@
 import 'dart:math';
-import 'package:bookmarker/databaseService.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:lottie/lottie.dart';
 
-import 'mainScreen.dart';
+import 'folderAddingScreen.dart';
+import 'bookmarkListScreen.dart';
 
 class FolderScreen extends StatefulWidget {
-  const FolderScreen({Key? key, this.user}) : super(key: key);
+  const FolderScreen({Key? key, required this.user}) : super(key: key);
   final user;
 
   @override
@@ -30,6 +30,9 @@ class _FolderScreenState extends State<FolderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Folders'),
+      ),
       body: SafeArea(
           child: RefreshIndicator(
         onRefresh: () async {
@@ -66,7 +69,7 @@ class _FolderScreenState extends State<FolderScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainScreen(
+                              builder: (context) => BookmarkListScreen(
                                   uid: widget.user.uid, folder: folderName),
                             ));
                       },
@@ -100,6 +103,20 @@ class _FolderScreenState extends State<FolderScreen> {
           },
         ),
       )),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          String userId = widget.user.uid.toString();
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: ((context) => folderAddingScreen(uid: userId))));
+        },
+        label: const Text('Create'),
+        icon: const Icon(
+          Icons.add,
+        ),
+        backgroundColor: Colors.green,
+      ),
     );
   }
 }

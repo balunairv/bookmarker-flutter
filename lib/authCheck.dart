@@ -1,4 +1,6 @@
-import 'package:bookmarker/screens/mainScreen.dart';
+import 'package:bookmarker/screens/homeScreen.dart';
+import 'package:bookmarker/screens/bookmarkListScreen.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,12 +20,13 @@ class AuthCheck extends StatelessWidget {
               providerConfigs: const [EmailProviderConfiguration()],
               headerBuilder: (context, constraints, _) {
                 return Lottie.network(
-                    'https://assets7.lottiefiles.com/datafiles/SkdS7QDyJTKTdwA/data.json');
+                  'https://assets7.lottiefiles.com/datafiles/SkdS7QDyJTKTdwA/data.json',
+                );
               },
             );
           }
 
-          return MainScreen(
+          return HomeScreen(
             user: snapshot.data!,
           );
         });
