@@ -66,8 +66,10 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                         padding: const EdgeInsets.all(5),
                         child: ExpansionTile(
                           title: Text(titleText),
-                          trailing:
-                              const Icon(Icons.arrow_circle_right_rounded),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {},
+                          ),
                           leading: const Icon(Icons.link_rounded),
                           backgroundColor: Color.fromARGB(255, 176, 250, 178),
                           expandedCrossAxisAlignment:

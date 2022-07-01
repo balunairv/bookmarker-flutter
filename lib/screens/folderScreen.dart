@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -76,8 +74,7 @@ class _FolderScreenState extends State<FolderScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: Colors.primaries[
-                              Random().nextInt(Colors.primaries.length)],
+                          color: Color.fromARGB(255, 161, 155, 155),
                         ),
                         height: 1000,
                         child: Column(

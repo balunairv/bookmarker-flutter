@@ -1,15 +1,11 @@
 import 'dart:math';
-
 import 'package:bookmarker/screens/groupAddingScreen.dart';
 import 'package:bookmarker/screens/groupBookmarkListScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../databaseService.dart';
-import 'folderAddingScreen.dart';
-import 'bookmarkListScreen.dart';
 
 class AllGroupsScreen extends StatefulWidget {
   AllGroupsScreen({Key? key, required this.user}) : super(key: key);
@@ -97,8 +93,7 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: Colors.primaries[
-                              Random().nextInt(Colors.primaries.length)],
+                          color: Color.fromARGB(255, 94, 89, 89),
                         ),
                         height: 1000,
                         child: Column(
