@@ -67,8 +67,37 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                         child: ExpansionTile(
                           title: Text(titleText),
                           trailing: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {},
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text('Alert'),
+                                        content: const Text(
+                                            "Are you sure to delete the bookmark. This action cannot be changed later"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Cancel')),
+                                          TextButton(
+                                              onPressed: () async {
+                                                final docBookmark =
+                                                    FirebaseFirestore.instance
+                                                        .collection("users")
+                                                        .doc(widget.uid)
+                                                        .collection("folders")
+                                                        .doc(widget.folder)
+                                                        .collection('bookmarks')
+                                                        .doc(titleText);
+                                                docBookmark.delete();
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Delete')),
+                                        ],
+                                      ));
+                            },
                           ),
                           leading: const Icon(Icons.link_rounded),
                           backgroundColor: Color.fromARGB(255, 176, 250, 178),
