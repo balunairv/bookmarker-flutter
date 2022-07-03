@@ -9,12 +9,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'addingScreen.dart';
 
 class GroupBookmarkListScreen extends StatefulWidget {
-  const GroupBookmarkListScreen(
-      {Key? key,
-      required this.uid,
-      required this.group,
-      required this.uniqueID})
-      : super(key: key);
+  const GroupBookmarkListScreen({
+    Key? key,
+    required this.uid,
+    required this.group,
+    required this.uniqueID,
+  }) : super(key: key);
   final String uid, group, uniqueID;
   @override
   State<GroupBookmarkListScreen> createState() =>
@@ -48,6 +48,35 @@ class _GroupBookmarkListScreenState extends State<GroupBookmarkListScreen> {
                                 "Unique ID of the group copied to clipboard. Use it to search for the group"))));
               },
               icon: Icon(Icons.share)),
+          IconButton(
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text('Alert'),
+                          content: const Text(
+                              "Are you sure to delete the bookmark. This action cannot be changed later"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel')),
+                            TextButton(
+                                onPressed: () async {
+                                  final docBookmark = FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc(widget.uid)
+                                      .collection("groups")
+                                      .doc(widget.uniqueID);
+                                  docBookmark.delete();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Delete')),
+                          ],
+                        ));
+              },
+              icon: const Icon(Icons.cancel))
         ],
       ),
       body: RefreshIndicator(
@@ -76,6 +105,7 @@ class _GroupBookmarkListScreenState extends State<GroupBookmarkListScreen> {
                     itemBuilder: (context, index) {
                       String titleText = myList[index]['title'].toString();
                       String url = myList[index]['url'].toString();
+
                       return Padding(
                         padding: const EdgeInsets.all(5),
                         child: ExpansionTile(

@@ -67,7 +67,7 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
                     'https://assets7.lottiefiles.com/datafiles/SkdS7QDyJTKTdwA/data.json'),
               );
             } else {
-              var myList = snapshot.data! as List<QueryDocumentSnapshot>;
+              var myList = snapshot.data as List<QueryDocumentSnapshot>;
               return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
@@ -75,7 +75,7 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
                 itemBuilder: (context, index) {
                   String groupName = myList[index]['title'].toString();
                   String iconUrl = myList[index]['icon_url'].toString();
-                  String uniqueID = myList[index]['uniqueID'].toString();
+                  String uniqueID = myList[index].id.toString();
                   return Padding(
                     padding: const EdgeInsets.all(10),
                     child: GestureDetector(
@@ -123,16 +123,17 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
         onPressed: () {
           Alert(
             context: context,
-            type: AlertType.warning,
+            type: AlertType.info,
             title: "JOIN GROUP",
-            desc: "Search with unique ID of grou",
+            desc: "Search with unique ID of group",
             buttons: [
               DialogButton(
+                onPressed: () {},
                 child: TextField(
                   style: TextStyle(color: Colors.white, fontSize: 20),
                   onChanged: (val) {
                     setState(() {
-                      groupID = val.toString();
+                      groupID = val;
                     });
                   },
                 ),
@@ -140,17 +141,19 @@ class _AllGroupsScreenState extends State<AllGroupsScreen> {
                   Color.fromRGBO(116, 116, 191, 1.0),
                   Color.fromRGBO(52, 138, 199, 1.0)
                 ]),
-                onPressed: () {
-                  DatabaseServices(uid: widget.user.uid)
-                      .searchAdd(uniqueID: groupID);
-                },
               ),
               DialogButton(
                 child: Text(
                   "Find and Add",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  // print('groupID : $groupID');
+                  DatabaseServices(uid: widget.user.uid)
+                      .searchAdd(uniqueID: groupID);
+
+                  Navigator.pop(context);
+                },
                 color: Color.fromRGBO(0, 179, 134, 1.0),
               ),
             ],

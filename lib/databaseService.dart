@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class DatabaseServices {
   final String uid;
@@ -14,7 +16,7 @@ class DatabaseServices {
         .doc(folder)
         .collection('bookmarks');
 
-    return await folderCollection.doc(title).set({
+    return await folderCollection.doc().set({
       'title': title,
       'url': url,
       // 'folder': folder,
@@ -45,28 +47,18 @@ class DatabaseServices {
         .set({'title': folderName, 'iconUrl': folderIcon});
   }
 
-  Future addGroups({folderName, folderIcon, uniqueID}) async {
-    final CollectionReference folderCollection =
+  Future addGroups({groupName, groupIcon, required uniqueID}) async {
+    final CollectionReference groupCollection =
         FirebaseFirestore.instance.collection('groups');
 
-    return await folderCollection.doc(uniqueID).set(
-        {'title': folderName, 'icon_url': folderIcon, 'uniqueID': uniqueID});
-  }
-
-  Future addGroupsInUser({folderName, folderIcon, uniqueID}) async {
-    final CollectionReference folderCollection = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('groups');
-
-    return await folderCollection.doc(uniqueID).set({
-      'title': folderName,
-      'icon_url': folderIcon,
-      'uniqueID': uniqueID,
+    return await groupCollection.doc(uniqueID).set({
+      'title': groupName,
+      'icon_url': groupIcon,
     });
   }
 
-  Future searchAdd({uniqueID}) async {
+  Future addGroupsInUser(
+      {required uniqueID, required groupName, required groupIcon}) async {
     final CollectionReference folderCollection = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -74,6 +66,46 @@ class DatabaseServices {
 
     return await folderCollection.doc(uniqueID).set({
       'uniqueID': uniqueID,
+      'title': groupName,
+      'icon_url': groupIcon,
     });
+  }
+
+  Future searchAdd({required uniqueID}) async {
+    await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(uniqueID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        String title = documentSnapshot['title'];
+        // print('Document data: ${documentSnapshot.data()}');
+        String groupName = documentSnapshot.get('title');
+        String groupIcon = documentSnapshot.get('icon_url');
+        addGroupsInUser(
+            uniqueID: uniqueID, groupName: groupName, groupIcon: groupIcon);
+      } else {}
+      ;
+    });
+  }
+
+  Future updateBookmark({title, url, folder, updatedTitle, required docID}) {
+    final DocumentReference docReference = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('folders')
+        .doc(folder)
+        .collection('bookmarks')
+        .doc(docID);
+
+    return docReference
+        .update({
+          'title': updatedTitle,
+          'url': url,
+        })
+        .then((value) => print(
+            'Success $title url: $url updatedTitle : $updatedTitle DocID: $docID '))
+        .catchError((error) => print(
+            'Error : $error title :$title url: $url updatedTitle : $updatedTitle'));
   }
 }

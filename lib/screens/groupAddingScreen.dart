@@ -16,8 +16,9 @@ class GroupAddingScreen extends StatefulWidget {
 class _GroupAddingScreenState extends State<GroupAddingScreen> {
   String uid;
   _GroupAddingScreenState(this.uid);
-  String uniqueID = "";
+
   String title = "";
+  String uniqueID = "";
   String dropDownVal = 'Other';
   final items = [
     'Video',
@@ -103,14 +104,13 @@ class _GroupAddingScreenState extends State<GroupAddingScreen> {
                 onPressed: () async {
                   String folderIcon = folderIconpicker(dropDownVal).getICon();
                   DatabaseServices(uid: uid).addGroups(
-                      folderName: title,
-                      folderIcon: folderIcon,
+                      groupName: title,
+                      groupIcon: folderIcon,
                       uniqueID: uniqueID);
                   DatabaseServices(uid: uid).addGroupsInUser(
-                    folderIcon: folderIcon,
-                    folderName: title,
-                    uniqueID: uniqueID,
-                  );
+                      uniqueID: uniqueID,
+                      groupIcon: folderIcon,
+                      groupName: title);
                   Navigator.pop(context);
                 },
                 child: Text(

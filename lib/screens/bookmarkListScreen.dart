@@ -1,4 +1,5 @@
 import 'package:bookmarker/screens/addingScreen.dart';
+import 'package:bookmarker/screens/editingScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -87,6 +88,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                         itemBuilder: (context, index) {
                           String titleText = myList[index]['title'].toString();
                           String url = myList[index]['url'].toString();
+                          String docID = myList[index].id.toString();
 
                           if (searchController.text.isEmpty) {
                             return Padding(
@@ -123,7 +125,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                                                   widget.folder)
                                                               .collection(
                                                                   'bookmarks')
-                                                              .doc(titleText);
+                                                              .doc(docID);
                                                       docBookmark.delete();
                                                       Navigator.pop(context);
                                                     },
@@ -152,6 +154,22 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                                 LaunchMode.externalApplication);
                                       },
                                       child: const Text('Open in Browser')),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        String userId = widget.uid.toString();
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: ((context) =>
+                                                    EditingScreen(
+                                                      uid: userId,
+                                                      folder: widget.folder,
+                                                      title: titleText,
+                                                      url: url,
+                                                      docID: docID,
+                                                    ))));
+                                      },
+                                      child: const Text('Edit'))
                                 ],
                               ),
                             );
@@ -213,14 +231,14 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                         launchUrl(Uri.parse(url),
                                             mode: LaunchMode.inAppWebView);
                                       },
-                                      child: Text('Open Here')),
+                                      child: const Text('Open Here')),
                                   ElevatedButton(
                                       onPressed: () {
                                         launchUrl(Uri.parse(url),
                                             mode:
                                                 LaunchMode.externalApplication);
                                       },
-                                      child: Text('Open in Browser')),
+                                      child: const Text('Open in Browser')),
                                 ],
                               ),
                             );
@@ -233,7 +251,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
             }),
       ),
       drawer: Drawer(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
