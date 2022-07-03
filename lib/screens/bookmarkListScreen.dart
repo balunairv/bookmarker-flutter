@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:lottie/lottie.dart';
-import 'package:url_launcher/link.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class BookmarkListScreen extends StatefulWidget {
@@ -17,6 +17,7 @@ class BookmarkListScreen extends StatefulWidget {
 }
 
 class _BookmarkListScreenState extends State<BookmarkListScreen> {
+  String SearchData = "";
   Future getBookmarks() async {
     var firestore = FirebaseFirestore.instance;
     QuerySnapshot qn = await firestore
@@ -28,6 +29,15 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
         .get();
 
     return qn.docs;
+  }
+
+  final searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,69 +67,174 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                 );
               } else {
                 var myList = snapshot.data! as List<QueryDocumentSnapshot>;
-                return ListView.builder(
-                    itemCount: myList.length,
-                    itemBuilder: (context, index) {
-                      String titleText = myList[index]['title'].toString();
-                      String url = myList[index]['url'].toString();
-                      return Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: ExpansionTile(
-                          title: Text(titleText),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: Text('Alert'),
-                                        content: const Text(
-                                            "Are you sure to delete the bookmark. This action cannot be changed later"),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Cancel')),
-                                          TextButton(
-                                              onPressed: () async {
-                                                final docBookmark =
-                                                    FirebaseFirestore.instance
-                                                        .collection("users")
-                                                        .doc(widget.uid)
-                                                        .collection("folders")
-                                                        .doc(widget.folder)
-                                                        .collection('bookmarks')
-                                                        .doc(titleText);
-                                                docBookmark.delete();
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Delete')),
-                                        ],
-                                      ));
-                            },
-                          ),
-                          leading: const Icon(Icons.link_rounded),
-                          backgroundColor: Color.fromARGB(255, 176, 250, 178),
-                          expandedCrossAxisAlignment:
-                              CrossAxisAlignment.stretch,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  launchUrl(Uri.parse(url),
-                                      mode: LaunchMode.inAppWebView);
-                                },
-                                child: Text('Open Here')),
-                            ElevatedButton(
-                                onPressed: () {
-                                  launchUrl(Uri.parse(url),
-                                      mode: LaunchMode.externalApplication);
-                                },
-                                child: Text('Open in Browser')),
-                          ],
-                        ),
-                      );
-                    });
+                return Column(children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.search),
+                          hintText: 'Search Title',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide:
+                                  const BorderSide(color: Colors.blue))),
+                      onChanged: (val) {
+                        setState(() {
+                          SearchData = val;
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: myList.length,
+                        itemBuilder: (context, index) {
+                          String titleText = myList[index]['title'].toString();
+                          String url = myList[index]['url'].toString();
+
+                          if (SearchData.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: ExpansionTile(
+                                title: Text(titleText),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: const Text('Alert'),
+                                              content: const Text(
+                                                  "Are you sure to delete the bookmark. This action cannot be changed later"),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child:
+                                                        const Text('Cancel')),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      final docBookmark =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(widget.uid)
+                                                              .collection(
+                                                                  "folders")
+                                                              .doc(
+                                                                  widget.folder)
+                                                              .collection(
+                                                                  'bookmarks')
+                                                              .doc(titleText);
+                                                      docBookmark.delete();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child:
+                                                        const Text('Delete')),
+                                              ],
+                                            ));
+                                  },
+                                ),
+                                leading: const Icon(Icons.link_rounded),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 176, 250, 178),
+                                expandedCrossAxisAlignment:
+                                    CrossAxisAlignment.stretch,
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        launchUrl(Uri.parse(url),
+                                            mode: LaunchMode.inAppWebView);
+                                      },
+                                      child: const Text('Open Here')),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        launchUrl(Uri.parse(url),
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      },
+                                      child: const Text('Open in Browser')),
+                                ],
+                              ),
+                            );
+                          }
+                          if (myList[index]['title']
+                              .toString()
+                              .startsWith(SearchData.toLowerCase())) {
+                            return Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: ExpansionTile(
+                                title: Text(titleText),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: const Text('Alert'),
+                                              content: const Text(
+                                                  "Are you sure to delete the bookmark. This action cannot be changed later"),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child:
+                                                        const Text('Cancel')),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      final docBookmark =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(widget.uid)
+                                                              .collection(
+                                                                  "folders")
+                                                              .doc(
+                                                                  widget.folder)
+                                                              .collection(
+                                                                  'bookmarks')
+                                                              .doc(titleText);
+                                                      docBookmark.delete();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child:
+                                                        const Text('Delete')),
+                                              ],
+                                            ));
+                                  },
+                                ),
+                                leading: const Icon(Icons.link_rounded),
+                                backgroundColor:
+                                    Color.fromARGB(255, 176, 250, 178),
+                                expandedCrossAxisAlignment:
+                                    CrossAxisAlignment.stretch,
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        launchUrl(Uri.parse(url),
+                                            mode: LaunchMode.inAppWebView);
+                                      },
+                                      child: Text('Open Here')),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        launchUrl(Uri.parse(url),
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      },
+                                      child: Text('Open in Browser')),
+                                ],
+                              ),
+                            );
+                          }
+                          return Container();
+                        }),
+                  ),
+                ]);
               }
             }),
       ),
