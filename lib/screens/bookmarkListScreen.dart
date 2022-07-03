@@ -17,7 +17,6 @@ class BookmarkListScreen extends StatefulWidget {
 }
 
 class _BookmarkListScreenState extends State<BookmarkListScreen> {
-  String SearchData = "";
   Future getBookmarks() async {
     var firestore = FirebaseFirestore.instance;
     QuerySnapshot qn = await firestore
@@ -43,9 +42,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.folder),
-      ),
+      appBar: AppBar(title: Text(widget.folder)),
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
@@ -69,9 +66,12 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                 var myList = snapshot.data! as List<QueryDocumentSnapshot>;
                 return Column(children: [
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(05),
                     child: TextField(
                       controller: searchController,
+                      onEditingComplete: () {
+                        setState(() {});
+                      },
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.search),
                           hintText: 'Search Title',
@@ -79,11 +79,6 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                               borderRadius: BorderRadius.circular(20),
                               borderSide:
                                   const BorderSide(color: Colors.blue))),
-                      onChanged: (val) {
-                        setState(() {
-                          SearchData = val;
-                        });
-                      },
                     ),
                   ),
                   Expanded(
@@ -93,7 +88,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                           String titleText = myList[index]['title'].toString();
                           String url = myList[index]['url'].toString();
 
-                          if (SearchData.isEmpty) {
+                          if (searchController.text.isEmpty) {
                             return Padding(
                               padding: const EdgeInsets.all(5),
                               child: ExpansionTile(
@@ -161,9 +156,8 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                               ),
                             );
                           }
-                          if (myList[index]['title']
-                              .toString()
-                              .startsWith(SearchData.toLowerCase())) {
+                          if (myList[index]['title'].toString().startsWith(
+                              searchController.text.toLowerCase())) {
                             return Padding(
                               padding: const EdgeInsets.all(5),
                               child: ExpansionTile(

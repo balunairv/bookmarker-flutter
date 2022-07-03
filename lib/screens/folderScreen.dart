@@ -15,14 +15,15 @@ class FolderScreen extends StatefulWidget {
 }
 
 class _FolderScreenState extends State<FolderScreen> {
-  Future getFolders() async {
+  Stream getFolders() async* {
     var firestore = FirebaseFirestore.instance;
     QuerySnapshot qn = await firestore
         .collection("users")
         .doc(widget.user.uid)
         .collection("folders")
+        .orderBy('title', descending: false)
         .get();
-    return qn.docs;
+    yield qn.docs;
   }
 
   @override
@@ -38,8 +39,8 @@ class _FolderScreenState extends State<FolderScreen> {
             getFolders();
           });
         },
-        child: FutureBuilder(
-          future: getFolders(),
+        child: StreamBuilder(
+          stream: getFolders(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
